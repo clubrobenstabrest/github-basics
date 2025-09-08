@@ -72,3 +72,50 @@ jobs:
       issue-url: ${{ needs.find_exercise.outputs.issue-url }}
       exercise-title: "GitHub Basics"
       update-readme-with-congratulations: false
+
+  finalize_fr:
+    name: Finalize FR
+    needs: [find_exercise, post_review_content, finish_exercise]
+    runs-on: ubuntu-latest
+    env:
+      ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Construire bloc de félicitations FR
+        id: build-congrats
+        uses: skills/action-text-variables@v3
+        with:
+          template-file: .github/i18n/fr/readme-congrats.md
+          template-vars: |
+            title: "GitHub Basics"
+            login: ${{ github.actor }}
+
+      - name: Préprend le bloc FR au README
+        run: |
+          printf "%s\n\n%s\n" "$CONGRATS" "$(cat README.md)" > README.md.new
+          mv README.md.new README.md
+        env:
+          CONGRATS: ${{ steps.build-congrats.outputs.updated-text }}
+
+      - name: Commit README.md
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(readme), félicitations finales en français"
+          file_pattern: README.md
+
+      - name: Commentaire final en français
+        uses: actions/github-script@v7
+        env:
+          ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            await github.rest.issues.createComment({
+              owner, repo, issue_number: Number(process.env.ISSUE_NUMBER),
+              body: [
+                `🎉 Félicitations @${context.actor} tu as terminé l’exercice **GitHub Basics**.`,
+                `Le README a été mis à jour avec un message final en français, bravo.`
+              ].join('\n\n')
+            });

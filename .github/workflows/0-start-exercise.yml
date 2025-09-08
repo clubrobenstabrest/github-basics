@@ -83,6 +83,27 @@ jobs:
           issue-number: ${{ env.ISSUE_NUMBER }}
           file: .github/i18n/fr/watching-for-progress.md
 
+      - name: Construire README FR
+        id: build-readme-fr
+        uses: skills/action-text-variables@v3
+        with:
+          template-file: .github/i18n/fr/readme-start.md
+          template-vars: |
+            title: "GitHub Basics"
+            login: ${{ github.actor }}
+            issue_url: ${{ env.ISSUE_URL || format('{0}/issues/{1}', 'https://github.com/' + github.repository, env.ISSUE_NUMBER) }}
+
+      - name: Mettre à jour README.md (FR)
+        run: echo "$README_CONTENT" > README.md
+        env:
+          README_CONTENT: ${{ steps.build-readme-fr.outputs.updated-text }}
+
+      - name: Commit README.md
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(readme): version FR pour l’intro"
+          file_pattern: README.md
+
       - name: Enable next step workflow
         run: gh workflow enable "Step 1"
         env:
