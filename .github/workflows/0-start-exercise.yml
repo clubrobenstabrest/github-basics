@@ -1,12 +1,13 @@
 name: Step 0 # Start Exercise
 
 on:
-  # Auto-start lorsque l'élève crée un dépôt depuis la template
+  # Auto-start quand le dépôt élève est créé depuis la template
+  # Le premier push contient .github/**, donc ça déclenche
   push:
     branches: [ main ]
-  # En complément, si la branche par défaut est créée sans commit
-  create:
-  # Déclencheur manuel de secours
+    paths:
+      - '.github/**'
+  # Secours manuel
   workflow_dispatch:
 
 permissions:
@@ -15,18 +16,23 @@ permissions:
   pull-requests: write
   actions: write
 
+# Empêche deux exécutions en parallèle sur la même ref
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   STEP_1_FILE: ".github/steps/1-step.md"
 
 jobs:
   start_exercise:
-    if: |
-      !github.event.repository.is_template
+    # Ne tourne pas sur un repo encore marqué template
     name: Start Exercise
+    if: !github.event.repository.is_template
     uses: skills/exercise-toolkit/.github/workflows/start-exercise.yml@v0.7.1
     with:
       exercise-title: "GitHub Basics"
-      intro-message: "Bienvenue ! Cette issue va te guider pas à pas dans le cours."
+      intro-message: "Bienvenue, cette issue va te guider pas à pas dans le cours."
 
   post_next_step_content:
     name: Post next step content
@@ -60,6 +66,7 @@ jobs:
           issue-number: ${{ env.ISSUE_NUMBER }}
           file: .github/i18n/fr/watching-for-progress.md
 
+      # Écrase le README EN par le README FR, APRÈS start_exercise
       - name: Construire README FR
         id: build-readme-fr
         uses: skills/action-text-variables@v3
@@ -124,5 +131,11 @@ jobs:
 
       - name: Enable next step workflow
         run: gh workflow enable "Step 1"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      # Important, on désactive Step 0 pour empêcher toute ré-exécution ultérieure
+      - name: Disable current workflow
+        run: gh workflow disable "${{ github.workflow }}"
         env:
           GH_TOKEN: ${{ github.token }}
