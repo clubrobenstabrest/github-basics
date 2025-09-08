@@ -2,7 +2,7 @@ name: Step 0 # Start Exercise
 
 on:
   # Auto-start quand le dépôt élève est créé depuis la template
-  # Le premier push contient .github/**, donc ça déclenche
+  # Le premier état contient .github/**, donc ce push déclenche Step 0
   push:
     branches: [ main ]
     paths:
@@ -16,7 +16,7 @@ permissions:
   pull-requests: write
   actions: write
 
-# Empêche deux exécutions en parallèle sur la même ref
+# Évite deux exécutions concurrentes sur la même ref
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -26,9 +26,9 @@ env:
 
 jobs:
   start_exercise:
-    # Ne tourne pas sur un repo encore marqué template
     name: Start Exercise
-    if: !github.event.repository.is_template
+    # ✅ Corrigé, utilisation de la syntaxe d'expression GitHub
+    if: ${{ !github.event.repository.is_template }}
     uses: skills/exercise-toolkit/.github/workflows/start-exercise.yml@v0.7.1
     with:
       exercise-title: "GitHub Basics"
@@ -36,8 +36,9 @@ jobs:
 
   post_next_step_content:
     name: Post next step content
-    runs-on: ubuntu-latest
     needs: [start_exercise]
+    if: ${{ needs.start_exercise.result == 'success' }}
+    runs-on: ubuntu-latest
     env:
       ISSUE_NUMBER: ${{ needs.start_exercise.outputs.issue-number }}
       ISSUE_REPOSITORY: ${{ github.repository }}
@@ -48,6 +49,12 @@ jobs:
         with:
           persist-credentials: true
           fetch-depth: 0
+
+      # Se place explicitement sur le dernier commit distant
+      - name: Sync to latest remote main
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
 
       - name: Create comment - add step content
         uses: GrantBirki/comment@v2.1.1
@@ -66,7 +73,7 @@ jobs:
           issue-number: ${{ env.ISSUE_NUMBER }}
           file: .github/i18n/fr/watching-for-progress.md
 
-      # Écrase le README EN par le README FR, APRÈS start_exercise
+      # ÉCRASE le README EN par le README FR
       - name: Construire README FR
         id: build-readme-fr
         uses: skills/action-text-variables@v3
@@ -82,7 +89,7 @@ jobs:
         env:
           README_CONTENT: ${{ steps.build-readme-fr.outputs.updated-text }}
 
-      - name: Commit README.md (FR) avec rebase auto
+      - name: Commit et push du README FR
         shell: bash
         env:
           GIT_AUTHOR_NAME: github-actions[bot]
@@ -91,16 +98,14 @@ jobs:
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
           set -e
-          BRANCH="${GITHUB_REF_NAME:-main}"
           git add README.md
           if git diff --cached --quiet; then
             echo "Aucun changement à committer"
           else
             git commit -m "docs(readme): version FR pour l’intro"
           fi
-          git fetch origin "$BRANCH"
-          git pull --rebase origin "$BRANCH" || true
-          git push origin "HEAD:$BRANCH"
+          # On est déjà rebased sur origin/main, le push sera fast-forward
+          git push origin main
 
       - name: Remplacer le corps de l’issue par la version FR
         uses: actions/github-script@v7
@@ -134,7 +139,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      # Important, on désactive Step 0 pour empêcher toute ré-exécution ultérieure
+      # On désactive Step 0 pour empêcher tout nouveau run
       - name: Disable current workflow
         run: gh workflow disable "${{ github.workflow }}"
         env:
