@@ -1,24 +1,22 @@
-## Step 1: Create a branch
+﻿## Étape 1, créer une branche
 
-Branches let you work on changes safely, without touching `main`.
+Les branches te permettent de travailler en sécurité, sans toucher à `main`.
 
-### 📖 Theory: What is a branch?
+### 📖 Théorie, c’est quoi une branche ?
 
-A branch is a movable pointer to a sequence of commits. You can experiment freely, then merge your work back into `main` with a pull request.
+Une branche est un pointeur mobile vers une séquence de commits. Tu peux expérimenter librement, puis fusionner ton travail dans `main` via une pull request.
 
-### ⌨️ Activity: Create `my-first-branch`
+### ⌨️ Exercice, créer `my-first-branch`
 
-1. From the **Code** tab, open the branch dropdown (it likely shows `main`).
-2. Type **`my-first-branch`** and select **Create branch**.
-3. (Optional CLI)
+1. Depuis l’onglet **Code**, ouvre le menu des branches, il affiche probablement `main`.
+2. Saisis **`my-first-branch`**, clique **Create branch**.
+3. Option ligne de commande
    ```bash
    git checkout -b my-first-branch
    ```
 
 <details>
-<summary>Having trouble? 🤷</summary><br/>
-
-Make sure you’re on the repository page, not your fork list.  
-If using CLI, verify you have Git installed, `git --version`.
-
+<summary>Un souci ? 🤷</summary><br/>
+Assure-toi d’être bien sur la page du dépôt, pas la liste de tes forks.  
+En CLI, vérifie que Git est installé, `git --version`.
 </details>

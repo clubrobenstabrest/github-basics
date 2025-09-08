@@ -1,22 +1,20 @@
-## Step 3: Open a pull request
+## Étape 3, ouvrir une pull request
 
-A pull request (PR) proposes your changes and starts a review.
+Une pull request propose tes changements et lance la relecture.
 
-### 📖 Theory: Why pull requests?
+### 📖 Pourquoi une PR ?
+La PR montre le diff, permet la review, lance des vérifications, et garde `main` stable tant que ce n’est pas prêt.
 
-PRs show a diff, enable code review, run checks, and keep `main` stable until your work is ready.
-
-### ⌨️ Activity: Create your PR
-
-1. Click **Compare & pull request** (or open the **Pull requests** tab → **New pull request**).
-2. Base: **`main`** ← Compare: **`my-first-branch`**.
-3. Add a clear title and a short description.
-4. (Optional) Request a review from a teammate.
+### ⌨️ Exercice, créer ta PR
+1. Clique **Compare & pull request**, ou **Pull requests** → **New pull request**.
+2. Base, **`main`** ← Compare, **`my-first-branch`**.
+3. Ajoute un titre clair et une courte description.
+4. Optionnel, demande une review à un collègue.
 
 <details>
-<summary>Having trouble? 🤷</summary><br/>
+<summary>Un souci ? 🤷</summary><br/>
 
-- If you don’t see the compare button, push your branch or ensure it has at least one commit.
-- Double-check the base/compare branches are correct.
+Si le bouton compare n’apparaît pas, pousse ta branche ou vérifie qu’elle a au moins un commit.  
+Contrôle que base et compare sont correctes.
 
 </details>

@@ -1,7 +1,7 @@
-# Playground
+# Terrain de jeu
 
-This is your sandbox for the first commit.
+Voici ton bac à sable pour le premier commit.
 
-- Edit this file on **your branch** `my-first-branch`
-- Add 2–3 lines about yourself and include the word **Hello**
-- Save, commit, and push your branch
+- Édite ce fichier sur **ta branche** `my-first-branch`
+- Ajoute 2–3 lignes sur toi et inclus le mot **Hello**
+- Enregistre, committe, puis pousse ta branche

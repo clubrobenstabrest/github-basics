@@ -25,7 +25,7 @@ jobs:
     uses: skills/exercise-toolkit/.github/workflows/start-exercise.yml@v0.7.1
     with:
       exercise-title: "GitHub Basics"
-      intro-message: "Welcome! This issue will guide you through the course."
+      intro-message: "Bienvenue ! Cette issue va te guider pas à pas dans le cours."
 
   post_next_step_content:
     name: Post next step content
@@ -38,13 +38,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Get response templates
-        uses: actions/checkout@v4
-        with:
-          repository: skills/exercise-toolkit
-          path: exercise-toolkit
-          ref: v0.7.1
 
       - name: Create comment - add step content
         uses: GrantBirki/comment@v2.1.1
@@ -61,7 +54,7 @@ jobs:
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
-          file: exercise-toolkit/markdown-templates/step-feedback/watching-for-progress.md
+          file: .github/i18n/fr/watching-for-progress.md
 
       - name: Enable next step workflow
         run: gh workflow enable "Step 1"

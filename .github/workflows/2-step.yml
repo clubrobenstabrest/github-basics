@@ -35,13 +35,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get response templates
-        uses: actions/checkout@v4
-        with:
-          repository: skills/exercise-toolkit
-          path: exercise-toolkit
-          ref: v0.7.1
-
       - name: Find last comment
         id: find-last-comment
         uses: peter-evans/find-comment@v3
@@ -56,7 +49,7 @@ jobs:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
           comment-id: ${{ steps.find-last-comment.outputs.comment-id }}
-          file: exercise-toolkit/markdown-templates/step-feedback/checking-work.md
+          file: .github/i18n/fr/checking-work.md
           edit-mode: replace
 
       # START: Checks for this exercise
@@ -83,13 +76,13 @@ jobs:
           issue-number: ${{ env.ISSUE_NUMBER }}
           comment-id: ${{ steps.find-last-comment.outputs.comment-id }}
           edit-mode: replace
-          file: exercise-toolkit/markdown-templates/step-feedback/step-results-table.md
+          file: .github/i18n/fr/step-results-table.md
           vars: |
             step_number: 2
             results_table:
-              - description: "Checked if playground/README.md exists"
+              - description: "Vérifier que playground/README.md existe"
                 passed: ${{ steps.check-file-exists.outcome == 'success' }}
-              - description: "Checked for 'Hello' in playground/README.md"
+              - description: "Chercher le mot 'Hello' dans playground/README.md"
                 passed: ${{ steps.check-for-keyphrase.outcome == 'success' }}
 
       # END: Checks
@@ -111,19 +104,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get response templates
-        uses: actions/checkout@v4
-        with:
-          repository: skills/exercise-toolkit
-          path: exercise-toolkit
-          ref: v0.7.1
-
       - name: Create comment - step finished
         uses: GrantBirki/comment@v2.1.1
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
-          file: exercise-toolkit/markdown-templates/step-feedback/step-finished-prepare-next-step.md
+          file: .github/i18n/fr/step-finished-prepare-next-step.md
           vars: |
             next_step_number: 3
 
@@ -139,7 +125,7 @@ jobs:
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
-          file: exercise-toolkit/markdown-templates/step-feedback/watching-for-progress.md
+          file: .github/i18n/fr/watching-for-progress.md
 
       - name: Disable current workflow and enable next one
         run: |

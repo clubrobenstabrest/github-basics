@@ -1,31 +1,28 @@
-## Step 2: Commit a file
+## Étape 2, committer un fichier
 
-Now make a small change on your branch and commit it.
+Fais une petite modification sur ta branche et crée un commit.
 
-### 📖 Theory: What is a commit?
+### 📖 Théorie, c’est quoi un commit ?
 
-A commit records a snapshot of your changes with a message explaining **why** you made them.
+Un commit enregistre un instantané de tes changements, avec un message qui explique **pourquoi**.
 
-### ⌨️ Activity: Edit `playground/README.md`
+### ⌨️ Exercice, éditer `playground/README.md`
 
-1. Create (if needed) and edit **`playground/README.md`** on **`my-first-branch`**.
-2. Add 2–3 lines introducing yourself. Please include the word **Hello** so the check can confirm your edit.
-3. Commit your change.
+1. Crée si besoin et édite **`playground/README.md`** sur **`my-first-branch`**.
+2. Ajoute 2–3 lignes pour te présenter, **incluant le mot Hello**.
+3. Committe ta modification.
 
-(Optional CLI)
-
+Option ligne de commande
 ```bash
 mkdir -p playground
-printf "Hello, I'm learning GitHub Basics!\n" >> playground/README.md
+printf "Hello, j'apprends GitHub Basics !\n" >> playground/README.md
 git add playground/README.md
-git commit -m "docs: add a short introduction in playground"
+git commit -m "docs: ajouter une courte présentation dans playground"
 git push origin my-first-branch
 ```
 
 <details>
-<summary>Having trouble? 🤷</summary><br/>
-
-Ensure you’re on `my-first-branch` when editing.  
-If committing via the web editor, use a clear message, for example “docs: add intro”.
-
+<summary>Un souci ? 🤷</summary><br/>
+Assure-toi d’être sur `my-first-branch` pour éditer.  
+Dans l’éditeur web, mets un message clair, par exemple “docs: add intro”.
 </details>
