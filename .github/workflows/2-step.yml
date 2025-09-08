@@ -9,8 +9,8 @@ permissions:
   contents: write
   actions: write
   issues: write
-  actions: write
   pull-requests: write # si tu veux commenter sur les PR
+  
 env:
   STEP_3_FILE: ".github/steps/3-step.md"
 
