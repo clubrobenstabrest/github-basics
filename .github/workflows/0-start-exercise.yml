@@ -91,7 +91,7 @@ jobs:
           template-vars: |
             title: "GitHub Basics"
             login: ${{ github.actor }}
-            issue_url: ${{ env.ISSUE_URL || format('{0}/issues/{1}', 'https://github.com/' + github.repository, env.ISSUE_NUMBER) }}
+            issue_url: https://github.com/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}
 
       - name: Mettre à jour README.md (FR)
         run: echo "$README_CONTENT" > README.md
