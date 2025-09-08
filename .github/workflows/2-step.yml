@@ -12,8 +12,8 @@ permissions:
   contents: write
   actions: write
   issues: write
-  pull-requests: write # si tu veux commenter sur les PR
-  
+  pull-requests: write
+
 env:
   STEP_3_FILE: ".github/steps/3-step.md"
 
@@ -22,7 +22,7 @@ jobs:
     name: Find Exercise Issue
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
 
-  # Optional "grading" job to check the practical work
+  # "Grading" pour vérifier le travail
   check_step_work:
     name: Check step work
     runs-on: ubuntu-latest
@@ -52,8 +52,7 @@ jobs:
           file: .github/i18n/fr/checking-work.md
           edit-mode: replace
 
-      # START: Checks for this exercise
-
+      # START: Checks
       - name: Check if playground/README.md exists
         id: check-file-exists
         continue-on-error: true
@@ -84,7 +83,6 @@ jobs:
                 passed: ${{ steps.check-file-exists.outcome == 'success' }}
               - description: "Chercher le mot 'Hello' dans playground/README.md"
                 passed: ${{ steps.check-for-keyphrase.outcome == 'success' }}
-
       # END: Checks
 
       - name: Fail job if not all checks passed
@@ -93,7 +91,6 @@ jobs:
 
   post_next_step_content:
     name: Post next step content
-    # Gating, on ne passe à l'étape 3 que si les checks sont OK
     needs: [find_exercise, check_step_work]
     runs-on: ubuntu-latest
     env:
@@ -129,7 +126,7 @@ jobs:
 
       - name: Disable current workflow and enable next one
         run: |
-          gh workflow disable "${{github.workflow}}"
+          gh workflow disable "${{ github.workflow }}"
           gh workflow enable "Step 3"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}

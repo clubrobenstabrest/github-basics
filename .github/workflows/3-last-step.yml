@@ -9,7 +9,7 @@ permissions:
   contents: write
   actions: write
   issues: write
-  pull-requests: write # si tu veux commenter sur les PR
+  pull-requests: write
 
 env:
   REVIEW_FILE: ".github/steps/x-review.md"
@@ -19,7 +19,7 @@ jobs:
     name: Find Exercise Issue
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
 
-  # Optional: when PR opens, post coaching (reuses step 3 content)
+  # Quand la PR s'ouvre, poster un coaching
   on-opened:
     if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
           file: ${{ env.REVIEW_FILE }}
 
       - name: Disable current workflow
-        run: gh workflow disable "${{github.workflow}}"
+        run: gh workflow disable "${{ github.workflow }}"
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -102,7 +102,7 @@ jobs:
       - name: Commit README.md
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs(readme), félicitations finales en français"
+          commit_message: "docs(readme): félicitations finales en français"
           file_pattern: README.md
 
       - name: Commentaire final en français
@@ -116,6 +116,6 @@ jobs:
               owner, repo, issue_number: Number(process.env.ISSUE_NUMBER),
               body: [
                 `🎉 Félicitations @${context.actor} tu as terminé l’exercice **GitHub Basics**.`,
-                `Le README a été mis à jour avec un message final en français, bravo.`
+                `Le README a été mis à jour avec un message final en français.`
               ].join('\n\n')
             });

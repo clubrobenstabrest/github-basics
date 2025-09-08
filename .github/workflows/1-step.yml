@@ -3,7 +3,7 @@ name: Step 1
 on:
   # Se déclenche quand l'élève crée la branche de l’exercice
   create:
-  # Optionnel, si la branche est créée par un premier push
+  # Si la branche est créée par un premier push
   push:
     branches: [ my-first-branch ]
   workflow_dispatch:
@@ -12,21 +12,25 @@ permissions:
   contents: read
   actions: write
   issues: write
-  pull-requests: write # si tu veux commenter sur les PR
-  
+  pull-requests: write
+
 env:
   STEP_2_FILE: ".github/steps/2-step.md"
 
 jobs:
   find_exercise:
     name: Find Exercise Issue
-    if: github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch'
+    if: >
+      (github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch')
+      || (github.event_name == 'push' && endsWith(github.ref, '/my-first-branch'))
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
 
   post_next_step_content:
     name: Post next step content
     needs: [find_exercise]
-    if: github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch'
+    if: >
+      (github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch')
+      || (github.event_name == 'push' && endsWith(github.ref, '/my-first-branch'))
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
@@ -61,7 +65,7 @@ jobs:
 
       - name: Disable current workflow and enable next one
         run: |
-          gh workflow disable "${{github.workflow}}"
+          gh workflow disable "${{ github.workflow }}"
           gh workflow enable "Step 2"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
