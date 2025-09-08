@@ -1,27 +1,29 @@
-## Step 2: (replace-me: STEP-NAME)
+## Step 2: Commit a file
 
-(replace-me: OPTIONAL Brief story or scenario to introduce the step)
+Now make a small change on your branch and commit it.
 
-### 📖 Theory: (replace-me: Theory title)
+### 📖 Theory: What is a commit?
 
-<!-- GitHub-styled notifications can be used outside of ordered lists. Available options are: NOTE, IMPORTANT, WARNING, TIP, CAUTION -->
-<!--
-> [!NOTE]
-> (Important note or additional information relevant to this section)
- -->
+A commit records a snapshot of your changes with a message explaining **why** you made them.
 
-(replace-me: Optional theory or background information relevant to this step)
+### ⌨️ Activity: Edit `playground/README.md`
 
-### ⌨️ Activity: (replace-me: Activity title)
+1. Create (if needed) and edit **`playground/README.md`** on **`my-first-branch`**.
+2. Add 2–3 lines introducing yourself. Please include the word **Hello** so the check can confirm your edit.
+3. Commit your change.
 
-1. (replace-me: First instruction)
-1. (replace-me: Second instruction)
-1. (replace-me: Additional instructions as needed)
+(Optional CLI)
 
-<details>
-<summary>Having trouble? 🤷</summary><br/>
+````bash
+mkdir -p playground
+printf "Hello, I'm learning GitHub Basics!\n" >> playground/README.md
+git add playground/README.md
+git commit -m "docs: add a short introduction in playground"
+git push origin my-first-branch
+<details> <summary>Having trouble? 🤷</summary><br/>
 
-- (replace-me: Troubleshooting tip or hint)
-- (replace-me: Additional troubleshooting tips as needed)
+Ensure you’re on my-first-branch when editing.
 
-</details>
+If committing via the web editor, use a clear message (e.g., “docs: add intro”).
+
+</details> ```

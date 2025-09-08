@@ -2,14 +2,9 @@ name: Step 3 # Last step of the exercise
 
 on:
   workflow_dispatch:
-  # Common event triggers: pull_request, push, issues, issue_comment (feel free to experiment)
-  # Docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
-  # Example:
+  # You can also trigger on PR events:
   # pull_request:
-  #   branches:
-  #     - main
-  #   types:
-  #     - closed
+  #   types: [opened, reopened, closed]
 
 permissions:
   contents: write
@@ -22,11 +17,24 @@ env:
 jobs:
   find_exercise:
     name: Find Exercise Issue
-    uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.0
+    uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
+
+  # Optional: when PR opens, post coaching (reuses step 3 content)
+  on-opened:
+    if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comment on the PR
+        uses: GrantBirki/comment@v2.1.1
+        with:
+          repository: ${{ github.repository }}
+          issue-number: ${{ github.event.pull_request.number }}
+          file: .github/steps/3-step.md
 
   post_review_content:
     name: Post review content
-    needs: [find_exercise] # if check_step_work then "needs: [find_exercise, check_step_work]"
+    needs: [find_exercise]
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
@@ -34,14 +42,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Get response templates
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           repository: skills/exercise-toolkit
           path: exercise-toolkit
-          ref: v0.7.0
+          ref: v0.7.1
 
       - name: Create comment - step finished - final review next
         uses: GrantBirki/comment@v2.1.1
@@ -68,4 +76,4 @@ jobs:
     uses: skills/exercise-toolkit/.github/workflows/finish-exercise.yml@v0.7.1
     with:
       issue-url: ${{ needs.find_exercise.outputs.issue-url }}
-      exercise-title: "(replace-me: Exercise title)"
+      exercise-title: "GitHub Basics"

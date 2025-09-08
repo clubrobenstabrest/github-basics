@@ -1,27 +1,23 @@
-## Step 1: (replace-me: STEP-NAME)
+## Step 1: Create a branch
 
-(replace-me: OPTIONAL Brief story or scenario to introduce the step)
+Branches let you work on changes safely, without touching `main`.
 
-### 📖 Theory: (replace-me: Theory title)
+### 📖 Theory: What is a branch?
 
-<!-- GitHub-styled notifications can be used outside of ordered lists. Available options are: NOTE, IMPORTANT, WARNING, TIP, CAUTION -->
-<!--
-> [!NOTE]
-> (Important note or additional information relevant to this section)
- -->
+A branch is a movable pointer to a sequence of commits. You can experiment freely, then merge your work back into `main` with a pull request.
 
-(replace-me: Optional theory or background information relevant to this step)
+### ⌨️ Activity: Create `my-first-branch`
 
-### ⌨️ Activity: (replace-me: Activity title)
+1. From the **Code** tab, open the branch dropdown (it likely shows `main`).
+2. Type **`my-first-branch`** and select **Create branch**.
+3. (Optional CLI)
+   ```bash
+   git checkout -b my-first-branch
+   <details> <summary>Having trouble? 🤷</summary><br/>
+   ```
 
-1. (replace-me: First instruction)
-1. (replace-me: Second instruction)
-1. (replace-me: Additional instructions as needed)
+Make sure you’re on the repository page (not your fork list).
 
-<details>
-<summary>Having trouble? 🤷</summary><br/>
-
-- (replace-me: Troubleshooting tip or hint)
-- (replace-me: Additional troubleshooting tips as needed)
+If using CLI, verify you have Git installed: git --version.
 
 </details>

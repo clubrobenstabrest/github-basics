@@ -1,27 +1,22 @@
-## Step 3: (replace-me: STEP-NAME)
+## Step 3: Open a pull request
 
-(replace-me: OPTIONAL Brief story or scenario to introduce the step)
+A pull request (PR) proposes your changes and starts a review.
 
-### 📖 Theory: (replace-me: Theory title)
+### 📖 Theory: Why pull requests?
 
-<!-- GitHub-styled notifications can be used outside of ordered lists. Available options are: NOTE, IMPORTANT, WARNING, TIP, CAUTION -->
-<!--
-> [!NOTE]
-> (Important note or additional information relevant to this section)
- -->
+PRs show a diff, enable code review, run checks, and keep `main` stable until your work is ready.
 
-(replace-me: Optional theory or background information relevant to this step)
+### ⌨️ Activity: Create your PR
 
-### ⌨️ Activity: (replace-me: Activity title)
-
-1. (replace-me: First instruction)
-1. (replace-me: Second instruction)
-1. (replace-me: Additional instructions as needed)
+1. Click **Compare & pull request** (or open the **Pull requests** tab → **New pull request**).
+2. Base: **`main`** ← Compare: **`my-first-branch`**.
+3. Add a clear title and a short description.
+4. (Optional) Request a review from a teammate.
 
 <details>
 <summary>Having trouble? 🤷</summary><br/>
 
-- (replace-me: Troubleshooting tip or hint)
-- (replace-me: Additional troubleshooting tips as needed)
+- If you don’t see the compare button, push your branch or ensure it has at least one commit.
+- Double-check the base/compare branches are correct.
 
 </details>

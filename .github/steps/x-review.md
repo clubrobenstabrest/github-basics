@@ -1,16 +1,18 @@
 ## Review
 
-_Congratulations, you've completed this exercise and learned a lot about (replace-me: feature/product that was taught in this exercise)
+🎉 Congratulations, you completed **GitHub Basics**!
 
-<img src="https://octodex.github.com/images/jetpacktocat.png" alt="celebrate" width=200 align=right>
+<img src="https://octodex.github.com/images/jetpacktocat.png" alt="celebrate" width="200" align="right" />
 
-Here's a recap of your accomplishments:
+Here’s what you accomplished:
 
-- (replace-me: Accomplishment #1)
-- (replace-me: Accomplishment #N)
+- Created a branch
+- Committed a change to `playground/README.md`
+- Opened a pull request
+- Merged your pull request
 
 ### What's next?
 
-- (replace-me: Natural follow up Skills exercise - if there is one)
-- (replace-me: Documentation link to learn more about the feature)
-- (replace-me: Other resources or calls to action)
+- Practice reviews: open a PR and leave comments on it
+- Learn more: <https://docs.github.com/pull-requests>
+- Try a follow-up course with a real project and CI checks

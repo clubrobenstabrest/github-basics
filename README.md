@@ -1,49 +1,50 @@
-# (replace-me: Exercise title)
+# GitHub Basics
 
-_(replace-me: One-line description of the exercise)_
+Learn the essential GitHub flow:
 
-## Welcome
+1. Create a branch
+2. Commit a file
+3. Open a pull request
+4. Merge your pull request
 
-- **Who is this for**: (replace-me: Target audience description)
-- **What you'll learn**: (replace-me: Learning objectives)
-- **What you'll build**: (replace-me: Description of what the learner will create)
-- **Prerequisites**:
-  - (replace-me: Prerequisite skill/exercise)
-  - (replace-me: Other prerequisites)
+## Who is this for
 
-- **How long**: This exercise takes less than (replace-me: estimated time) to complete.
+New contributors who want a hands-on, guided introduction to GitHub collaboration.
 
-In this exercise, you will:
+## What you'll learn
 
-1. (replace-me: Learning objective step #1)
-1. (replace-me: Learning objective step #2)
-1. (replace-me: Learning objective step #N)
+- Repositories, branches, commits, and pull requests
+- Writing meaningful commit messages
+- Reviewing and merging a pull request
 
+## What you'll build
 
-### How to start this exercise
+A small documentation change in this repository, proposed through a pull request.
 
-Simply copy the exercise to your account, then give your favorite Octocat (Mona) **about 20 seconds** to prepare the first lesson, then **refresh the page**.
+## Prerequisites
 
-<!--  (replace-me: Make sure to edit the URL with proper template_owner, template_name, repo name and description)  -->
-[![](https://img.shields.io/badge/Copy%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new?template_owner=skills&template_name=exercise-template&owner=%40me&name=skills-<replace-me>&description=Exercise:+Replace+me&visibility=public)
+- A GitHub account
+- No command line or coding experience required (CLI tips are included, but optional)
+
+## How long
+
+This exercise typically takes **15–30 minutes**.
+
+## How to start this exercise
+
+Copy this exercise to your account, wait about **20 seconds**, then refresh the page:
+[![](https://img.shields.io/badge/Copy%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new?template_owner=clubrobenstabrest&template_name=github-basics&owner=%40me&name=github-basics&description=Exercise%3A%20GitHub%20Basics&visibility=public)
 
 <details>
 <summary>Having trouble? 🤷</summary><br/>
 
-When copying the exercise, we recommend the following settings:
-
-- For owner, choose your personal account or an organization to host the repository.
-
-- We recommend creating a public repository, since private repositories will use Actions minutes.
-
-If the exercise isn't ready in 20 seconds, please check the [Actions](../../actions) tab.
-
-- Check to see if a job is running. Sometimes it simply takes a bit longer.
-
-- If the page shows a failed job, please submit an issue. Nice, you found a bug! 🐛
+- Choose your personal account (or an organization) as the owner.
+- Public repositories are recommended (private repos consume Actions minutes).
+- If it isn’t ready in 20s, open the <a href="../../actions">Actions</a> tab to check the run.
+- If a job failed, please open an issue — you found a bug! 🐛
 
 </details>
 
 ---
 
-&copy; 2025 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
+&copy; 2025 GitHub • [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) • [MIT License](https://gh.io/mit)
