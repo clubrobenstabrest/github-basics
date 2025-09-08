@@ -1,9 +1,12 @@
 name: Step 2
 
 on:
+  # Valide automatiquement les commits sur la branche d’exercice
+  push:
+    branches: [ my-first-branch ]
+    paths:
+      - "playground/**"
   workflow_dispatch:
-  # You can also trigger on push to validate right after commits:
-  # push:
 
 permissions:
   contents: write
@@ -97,7 +100,8 @@ jobs:
 
   post_next_step_content:
     name: Post next step content
-    needs: [find_exercise] # or [find_exercise, check_step_work] if you want to gate progression
+    # Gating, on ne passe à l'étape 3 que si les checks sont OK
+    needs: [find_exercise, check_step_work]
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}

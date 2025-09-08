@@ -1,10 +1,13 @@
 name: Step 0 # Start Exercise
 
 on:
+  # Auto-start lorsque l'élève crée un dépôt depuis la template
+  push:
+    branches: [ main ]
+  # En complément, si la branche par défaut est créée sans commit
+  create:
+  # Garde le déclencheur manuel en secours
   workflow_dispatch:
-  # NOTE: Enable this if your repo is a template and you want auto-start on first push to main
-  # push:
-  #   branches: [ main ]
 
 permissions:
   contents: write

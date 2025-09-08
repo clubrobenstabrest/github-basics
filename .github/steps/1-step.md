@@ -13,11 +13,12 @@ A branch is a movable pointer to a sequence of commits. You can experiment freel
 3. (Optional CLI)
    ```bash
    git checkout -b my-first-branch
-   <details> <summary>Having trouble? 🤷</summary><br/>
    ```
 
-Make sure you’re on the repository page (not your fork list).
+<details>
+<summary>Having trouble? 🤷</summary><br/>
 
-If using CLI, verify you have Git installed: git --version.
+Make sure you’re on the repository page, not your fork list.  
+If using CLI, verify you have Git installed, `git --version`.
 
 </details>

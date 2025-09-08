@@ -14,16 +14,18 @@ A commit records a snapshot of your changes with a message explaining **why** yo
 
 (Optional CLI)
 
-````bash
+```bash
 mkdir -p playground
 printf "Hello, I'm learning GitHub Basics!\n" >> playground/README.md
 git add playground/README.md
 git commit -m "docs: add a short introduction in playground"
 git push origin my-first-branch
-<details> <summary>Having trouble? 🤷</summary><br/>
+```
 
-Ensure you’re on my-first-branch when editing.
+<details>
+<summary>Having trouble? 🤷</summary><br/>
 
-If committing via the web editor, use a clear message (e.g., “docs: add intro”).
+Ensure you’re on `my-first-branch` when editing.  
+If committing via the web editor, use a clear message, for example “docs: add intro”.
 
-</details> ```
+</details>
