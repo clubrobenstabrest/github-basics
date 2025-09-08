@@ -10,6 +10,7 @@ permissions:
   contents: write
   actions: write
   issues: write
+  pull-requests: write # si tu veux commenter sur les PR
 
 env:
   REVIEW_FILE: ".github/steps/x-review.md"

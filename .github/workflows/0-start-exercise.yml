@@ -8,9 +8,9 @@ on:
 
 permissions:
   contents: write
-  actions: write
   issues: write
-
+  pull-requests: write # si tu veux commenter sur les PR
+  actions: write    # si tu utilises gh workflow enable/disable
 env:
   STEP_1_FILE: ".github/steps/1-step.md"
 
