@@ -47,24 +47,23 @@ jobs:
           script: |
             const {owner, repo} = context.repo;
             const number = process.env.ISSUE_NUMBER;
-            const body = `
-👋 Salut @${context.actor} ! Bienvenue dans ton exercice **GitHub Skills**.
-
-Bienvenue, cette issue va te guider pas à pas dans le cours.
-
-✨ Il s'agit d'un exercice GitHub Skills interactif et pratique.
-
-Au fil des étapes, je publierai des mises à jour dans les commentaires :
-
-✅ Vérifier ton travail et t’indiquer la suite  
-💡 Partager des conseils et des ressources  
-🚀 Célébrer ta progression et la fin
-
-C'est parti, amuse-toi bien !
-
-Mona
-`.trim();
-
+            const body = [
+              "👋 Salut @" + context.actor + " ! Bienvenue dans ton exercice **GitHub Skills**.",
+              "",
+              "Bienvenue, cette issue va te guider pas à pas dans le cours.",
+              "",
+              "✨ Il s'agit d'un exercice GitHub Skills interactif et pratique.",
+              "",
+              "Au fil des étapes, je publierai des mises à jour dans les commentaires :",
+              "",
+              "✅ Vérifier ton travail et t’indiquer la suite  ",
+              "💡 Partager des conseils et des ressources  ",
+              "🚀 Célébrer ta progression et la fin",
+              "",
+              "C'est parti, amuse-toi bien !",
+              "",
+              "Mona"
+            ].join('\n');
             await github.rest.issues.update({ owner, repo, issue_number: Number(number), body });
 
       - name: Create comment - add step content
