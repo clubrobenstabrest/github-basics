@@ -68,7 +68,7 @@ jobs:
       - name: Disable current workflow
         run: gh workflow disable "${{github.workflow}}"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
 
   finish_exercise:
     name: Finish Exercise
@@ -78,4 +78,3 @@ jobs:
     with:
       issue-url: ${{ needs.find_exercise.outputs.issue-url }}
       exercise-title: "GitHub Basics"
-      completion-message: "Congratulations on completing the GitHub Basics exercise! 🎉"
