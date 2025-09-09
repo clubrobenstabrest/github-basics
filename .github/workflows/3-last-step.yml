@@ -102,46 +102,48 @@ jobs:
             const shareBsky = `https://bsky.app/intent/compose?text=${enc}`;
             const shareLinkedIn = `https://www.linkedin.com/feed/?shareActive=true&text=${enc}`;
 
-            const block = `
-<div align="center">
-
-# 🎉 Félicitations ${login} ! 🎉
-
-<img src="https://octodex.github.com/images/welcometocat.png" height="200px" />
-
-### 🌟 Tu as terminé l’exercice avec succès ! 🌟
-
-## 🚀 Partage ta réussite
-
-**Montre tes nouvelles compétences et inspire les autres !**
-
-<a href="${shareX}" target="_blank" rel="noopener noreferrer">
-  <img src="https://img.shields.io/badge/Partager%20sur%20X-1da1f2?style=for-the-badge&logo=x&logoColor=white" alt="Partager sur X" />
-</a>
-<a href="${shareBsky}" target="_blank" rel="noopener noreferrer">
-  <img src="https://img.shields.io/badge/Partager%20sur%20Bluesky-0085ff?style=for-the-badge&logo=bluesky&logoColor=white" alt="Partager sur Bluesky" />
-</a>
-<a href="${shareLinkedIn}" target="_blank" rel="noopener noreferrer">
-  <img src="https://img.shields.io/badge/Partager%20sur%20LinkedIn-0077b5?style=for-the-badge&logo=linkedin&logoColor=white" alt="Partager sur LinkedIn" />
-</a>
-
-### 🎯 Et maintenant ?
-
-**Garde l’élan !**
-
-[![](https://img.shields.io/badge/Revenir%20%C3%A0%20l%27exercice-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](${repoUrl}/issues/${process.env.ISSUE_NUMBER})
-[![GitHub Skills](https://img.shields.io/badge/D%C3%A9couvrir%20GitHub%20Skills-000000?style=for-the-badge&logo=github&logoColor=white)](https://learn.github.com/skills)
-
-*Il n’y a pas de meilleure façon d’apprendre que de construire des choses !* 🚀
-
-</div>
-
----
-`.trim() + "\n";
+            const lines = [
+              '<div align="center">',
+              '',
+              '# 🎉 Félicitations ' + login + ' ! 🎉',
+              '',
+              '<img src="https://octodex.github.com/images/welcometocat.png" height="200px" />',
+              '',
+              '### 🌟 Tu as terminé l’exercice avec succès ! 🌟',
+              '',
+              '## 🚀 Partage ta réussite',
+              '',
+              '**Montre tes nouvelles compétences et inspire les autres !**',
+              '',
+              `<a href="${shareX}" target="_blank" rel="noopener noreferrer">`,
+              '  <img src="https://img.shields.io/badge/Partager%20sur%20X-1da1f2?style=for-the-badge&logo=x&logoColor=white" alt="Partager sur X" />',
+              '</a>',
+              `<a href="${shareBsky}" target="_blank" rel="noopener noreferrer">`,
+              '  <img src="https://img.shields.io/badge/Partager%20sur%20Bluesky-0085ff?style=for-the-badge&logo=bluesky&logoColor=white" alt="Partager sur Bluesky" />',
+              '</a>',
+              `<a href="${shareLinkedIn}" target="_blank" rel="noopener noreferrer">`,
+              '  <img src="https://img.shields.io/badge/Partager%20sur%20LinkedIn-0077b5?style=for-the-badge&logo=linkedin&logoColor=white" alt="Partager sur LinkedIn" />',
+              '</a>',
+              '',
+              '### 🎯 Et maintenant ?',
+              '',
+              '**Garde l’élan !**',
+              '',
+              `[![](https://img.shields.io/badge/Revenir%20%C3%A0%20l%27exercice-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](${repoUrl}/issues/${process.env.ISSUE_NUMBER})`,
+              '[![GitHub Skills](https://img.shields.io/badge/D%C3%A9couvrir%20GitHub%20Skills-000000?style=for-the-badge&logo=github&logoColor=white)](https://learn.github.com/skills)',
+              '',
+              '*Il n’y a pas de meilleure façon d’apprendre que de construire des choses !* 🚀',
+              '',
+              '</div>',
+              '',
+              '---',
+              ''
+            ];
+            const block = lines.join('\n');
 
             const readmePath = path.join(process.env.GITHUB_WORKSPACE, 'README.md');
             const current = fs.existsSync(readmePath) ? fs.readFileSync(readmePath, 'utf8') : '';
-            fs.writeFileSync(readmePath, `${block}${current}`, 'utf8');
+            fs.writeFileSync(readmePath, block + current, 'utf8');
 
       - name: Commit and push final README
         shell: bash
