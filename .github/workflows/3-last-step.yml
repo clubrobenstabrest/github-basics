@@ -20,7 +20,7 @@ jobs:
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
 
   on-opened:
-    if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')
+    if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,6 +34,7 @@ jobs:
   post_review_content:
     name: Post review content
     needs: [find_exercise]
+    if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened') }}
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
@@ -43,30 +44,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create comment - step finished - final review next
+      - name: Create comment, step finished, final review next
         uses: GrantBirki/comment@v2.1.1
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
           file: .github/i18n/fr/lesson-review.md
 
-      - name: Create comment - add review content
+      - name: Create comment, add review content
         uses: GrantBirki/comment@v2.1.1
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
           file: ${{ env.REVIEW_FILE }}
 
-      - name: Disable current workflow
-        run: gh workflow disable ".github/workflows/3-last-step.yml"
-        env:
-          GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
-
   finish_exercise:
     name: Finish Exercise
-    needs: [find_exercise, post_review_content]
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    needs: [find_exercise]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
     uses: skills/exercise-toolkit/.github/workflows/finish-exercise.yml@v0.7.1
     with:
       issue-url: ${{ needs.find_exercise.outputs.issue-url }}
@@ -75,10 +70,12 @@ jobs:
 
   finalize_fr:
     name: Finalize FR
-    needs: [find_exercise, post_review_content, finish_exercise]
+    needs: [find_exercise, finish_exercise]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     env:
       ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -192,3 +189,15 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
+
+  disable_step3:
+    name: Disable Step 3
+    needs: [finalize_fr]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disable workflow file
+        run: gh workflow disable ".github/workflows/3-last-step.yml"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
