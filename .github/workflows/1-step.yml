@@ -1,11 +1,9 @@
 name: Step 1
 
 on:
-  # Se déclenche quand l'élève crée la branche de l’exercice
+  # Uniquement quand la branche de l’exercice est créée
   create:
-  # Si la branche est créée par un premier push
-  push:
-    branches: [ my-first-branch ]
+  # Secours manuel
   workflow_dispatch:
 
 permissions:
@@ -17,20 +15,21 @@ permissions:
 env:
   STEP_2_FILE: ".github/steps/2-step.md"
 
+# Empêche des runs concurrents sur la même ref
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   find_exercise:
     name: Find Exercise Issue
-    if: >
-      (github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch')
-      || (github.event_name == 'push' && endsWith(github.ref, '/my-first-branch'))
+    if: ${{ github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch' }}
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
 
   post_next_step_content:
     name: Post next step content
     needs: [find_exercise]
-    if: >
-      (github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch')
-      || (github.event_name == 'push' && endsWith(github.ref, '/my-first-branch'))
+    if: ${{ github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref == 'my-first-branch' }}
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
@@ -40,7 +39,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Idempotence, si on a déjà posté "Étape 2", on ne reposte pas
+      - name: Chercher commentaire existant "Étape 2"
+        id: already-posted
+        uses: peter-evans/find-comment@v3
+        with:
+          repository: ${{ env.ISSUE_REPOSITORY }}
+          issue-number: ${{ env.ISSUE_NUMBER }}
+          direction: last
+          comment-author: github-actions[bot]
+          body-includes: "Étape 2, committer un fichier"
+
       - name: Create comment - step finished
+        if: ${{ steps.already-posted.outputs.comment-id == '' }}
         uses: GrantBirki/comment@v2.1.1
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
@@ -50,6 +61,7 @@ jobs:
             next_step_number: 2
 
       - name: Create comment - add step content
+        if: ${{ steps.already-posted.outputs.comment-id == '' }}
         uses: GrantBirki/comment@v2.1.1
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
@@ -57,6 +69,7 @@ jobs:
           file: ${{ env.STEP_2_FILE }}
 
       - name: Create comment - watching for progress
+        if: ${{ steps.already-posted.outputs.comment-id == '' }}
         uses: GrantBirki/comment@v2.1.1
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
@@ -65,7 +78,8 @@ jobs:
 
       - name: Disable current workflow and enable next one
         run: |
-          gh workflow disable "${{ github.workflow }}"
+          gh workflow disable ".github/workflows/1-step.yml"
           gh workflow enable ".github/workflows/2-step.yml"
         env:
           GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
