@@ -20,7 +20,7 @@ jobs:
     name: Find Exercise Issue
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
 
-  # À l'ouverture ou mise à jour de la PR, on affiche l'Étape 4 (merge)
+  # 1) À l'ouverture/mise à jour de la PR, afficher l'Étape 4 (merge)
   step4_merge_guidance:
     name: Step 4, merge guidance
     needs: [find_exercise]
@@ -75,7 +75,7 @@ jobs:
           vars: |
             status_line: ${{ steps.status.outputs.line }}
 
-  # À la fermeture mergée, on finalise
+  # 2) Au merge, lancer le workflow de fin
   finish_exercise:
     name: Finish Exercise
     needs: [find_exercise]
@@ -86,9 +86,50 @@ jobs:
       exercise-title: "GitHub Basics"
       update-readme-with-congratulations: false
 
+  # 3) Remplacer le commentaire "Congratulations..." par une version FR
+  fr_congrats_comment:
+    name: Replace official congrats with FR
+    needs: [find_exercise, finish_exercise]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    env:
+      ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}
+    steps:
+      - name: Replace EN comment with FR body
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const issue_number = Number('${{ env.ISSUE_NUMBER }}');
+
+            // Corps FR de remplacement
+            const frBody = [
+              `🎉 Félicitations @${context.actor} tu as terminé l’exercice **GitHub Basics**.`,
+              `Le dépôt a été mis à jour pour marquer la réussite, et le README affiche un message de félicitations en français.`,
+              `➡️ Retourne à la page d’accueil du dépôt pour voir le résultat.`
+            ].join('\n\n');
+
+            // Cherche le dernier commentaire du bot contenant "Congratulations"
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo, issue_number, per_page: 100, sort: 'created', direction: 'desc'
+            });
+
+            const target = comments.find(c =>
+              c.user?.login === 'github-actions[bot]' &&
+              /Congratulations|You finished the exercise/i.test(c.body || '')
+            );
+
+            if (target) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: target.id, body: frBody });
+            } else {
+              // Par sécurité, si on ne trouve pas le commentaire EN on poste le FR
+              await github.rest.issues.createComment({ owner, repo, issue_number, body: frBody });
+            }
+
+  # 4) Mettre à jour le README avec le bloc de félicitations
   finalize_fr:
     name: Finalize FR
-    needs: [find_exercise, finish_exercise]
+    needs: [find_exercise, finish_exercise, fr_congrats_comment]
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     env:
@@ -114,6 +155,7 @@ jobs:
             const shareX = `https://twitter.com/intent/tweet?text=${enc}`;
             const shareBsky = `https://bsky.app/intent/compose?text=${enc}`;
             const shareLinkedIn = `https://www.linkedin.com/feed/?shareActive=true&text=${enc}`;
+
             const lines = [
               '<div align="center">',
               '',
@@ -175,9 +217,10 @@ jobs:
           git pull --rebase origin main || true
           git push origin HEAD:main
 
+  # 5) Revue finale en FR, publiée après remplacement du message et màj du README
   post_review_content:
     name: Post review content, after merge
-    needs: [find_exercise, finalize_fr]
+    needs: [find_exercise, fr_congrats_comment, finalize_fr]
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     env:
@@ -201,6 +244,7 @@ jobs:
           issue-number: ${{ env.ISSUE_NUMBER }}
           file: ${{ env.REVIEW_FILE }}
 
+  # 6) Désactivation une fois tout terminé
   disable_step3:
     name: Disable Step 3
     needs: [post_review_content]
