@@ -26,6 +26,7 @@
             const shareBsky = `https://bsky.app/intent/compose?text=${enc}`;
             const shareLinkedIn = `https://www.linkedin.com/feed/?shareActive=true&text=${enc}`;
 
+            // Tout le bloc HTML/Markdown encapsulé dans une string JS
             const block = `
 <div align="center">
 
