@@ -135,12 +135,13 @@ jobs:
             await github.rest.issues.update({ owner, repo, issue_number: number, body });
 
       - name: Enable next step workflow
-        run: gh workflow enable "Step 1"
+        run: gh workflow enable ".github/workflows/1-step.yml"
         env:
           GH_TOKEN: ${{ github.token }}
 
       # On désactive Step 0 pour empêcher tout nouveau run
       - name: Disable current workflow
-        run: gh workflow disable "${{ github.workflow }}"
+        run: gh workflow disable ".github/workflows/0-start-exercise.yml"
         env:
           GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
