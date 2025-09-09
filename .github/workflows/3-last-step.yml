@@ -1,3 +1,78 @@
+name: Step 3 # Last step of the exercise
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+  pull-requests: write
+
+env:
+  REVIEW_FILE: ".github/steps/x-review.md"
+
+jobs:
+  find_exercise:
+    name: Find Exercise Issue
+    uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
+
+  on-opened:
+    if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comment on the PR
+        uses: GrantBirki/comment@v2.1.1
+        with:
+          repository: ${{ github.repository }}
+          issue-number: ${{ github.event.pull_request.number }}
+          file: .github/steps/3-step.md
+
+  post_review_content:
+    name: Post review content
+    needs: [find_exercise]
+    runs-on: ubuntu-latest
+    env:
+      ISSUE_REPOSITORY: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create comment - step finished - final review next
+        uses: GrantBirki/comment@v2.1.1
+        with:
+          repository: ${{ env.ISSUE_REPOSITORY }}
+          issue-number: ${{ env.ISSUE_NUMBER }}
+          file: .github/i18n/fr/lesson-review.md
+
+      - name: Create comment - add review content
+        uses: GrantBirki/comment@v2.1.1
+        with:
+          repository: ${{ env.ISSUE_REPOSITORY }}
+          issue-number: ${{ env.ISSUE_NUMBER }}
+          file: ${{ env.REVIEW_FILE }}
+
+      - name: Disable current workflow
+        run: gh workflow disable ".github/workflows/3-last-step.yml"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+
+  finish_exercise:
+    name: Finish Exercise
+    needs: [find_exercise, post_review_content]
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    uses: skills/exercise-toolkit/.github/workflows/finish-exercise.yml@v0.7.1
+    with:
+      issue-url: ${{ needs.find_exercise.outputs.issue-url }}
+      exercise-title: "GitHub Basics"
+      update-readme-with-congratulations: false
+
   finalize_fr:
     name: Finalize FR
     needs: [find_exercise, post_review_content, finish_exercise]
@@ -11,7 +86,7 @@
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Mettre à jour README avec bloc FR et liens de partage
+      - name: Update README with final FR block and share links
         uses: actions/github-script@v7
         with:
           script: |
@@ -20,13 +95,13 @@
             const {owner, repo} = context.repo;
             const login = context.actor;
             const repoUrl = `https://github.com/${owner}/${repo}`;
+
             const text = `Je viens de terminer l’exercice "GitHub Basics" ! 🎉\n\n${repoUrl}\n\n#GitHubSkills #OpenSource #GitHubLearn`;
             const enc = encodeURIComponent(text);
             const shareX = `https://twitter.com/intent/tweet?text=${enc}`;
             const shareBsky = `https://bsky.app/intent/compose?text=${enc}`;
             const shareLinkedIn = `https://www.linkedin.com/feed/?shareActive=true&text=${enc}`;
 
-            // Tout le bloc HTML/Markdown encapsulé dans une string JS
             const block = `
 <div align="center">
 
@@ -62,13 +137,13 @@
 </div>
 
 ---
-`;
+`.trim() + "\n";
 
             const readmePath = path.join(process.env.GITHUB_WORKSPACE, 'README.md');
             const current = fs.existsSync(readmePath) ? fs.readFileSync(readmePath, 'utf8') : '';
-            fs.writeFileSync(readmePath, `${block}\n${current}`, 'utf8');
+            fs.writeFileSync(readmePath, `${block}${current}`, 'utf8');
 
-      - name: Commit et push du README final FR
+      - name: Commit and push final README
         shell: bash
         env:
           GIT_AUTHOR_NAME: github-actions[bot]
@@ -87,7 +162,7 @@
           git pull --rebase origin main || true
           git push origin HEAD:main
 
-      - name: Remplacer le commentaire final EN par FR
+      - name: Replace final EN comment with FR
         uses: actions/github-script@v7
         env:
           ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
