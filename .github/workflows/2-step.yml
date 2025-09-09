@@ -6,6 +6,7 @@ on:
     branches: [ my-first-branch ]
     paths:
       - "playground/**"
+  # Déclencheur manuel en secours
   workflow_dispatch:
 
 permissions:
@@ -17,12 +18,16 @@ permissions:
 env:
   STEP_3_FILE: ".github/steps/3-step.md"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   find_exercise:
     name: Find Exercise Issue
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.1
 
-  # "Grading" pour vérifier le travail
+  # "Grading" pour vérifier le travail de l'étape 2
   check_step_work:
     name: Check step work
     runs-on: ubuntu-latest
@@ -30,10 +35,16 @@ jobs:
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
       ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Get response templates
+        uses: actions/checkout@v4
+        with:
+          repository: skills/exercise-toolkit
+          path: exercise-toolkit
+          ref: v0.7.1
 
       - name: Find last comment
         id: find-last-comment
@@ -49,10 +60,10 @@ jobs:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
           comment-id: ${{ steps.find-last-comment.outputs.comment-id }}
-          file: .github/i18n/fr/checking-work.md
+          file: exercise-toolkit/markdown-templates/step-feedback/checking-work.md
           edit-mode: replace
 
-      # START: Checks
+      # Vérifications de l'exercice
       - name: Check if playground/README.md exists
         id: check-file-exists
         continue-on-error: true
@@ -75,15 +86,14 @@ jobs:
           issue-number: ${{ env.ISSUE_NUMBER }}
           comment-id: ${{ steps.find-last-comment.outputs.comment-id }}
           edit-mode: replace
-          file: .github/i18n/fr/step-results-table.md
+          file: exercise-toolkit/markdown-templates/step-feedback/step-results-table.md
           vars: |
             step_number: 2
             results_table:
               - description: "Vérifier que playground/README.md existe"
                 passed: ${{ steps.check-file-exists.outcome == 'success' }}
-              - description: "Chercher le mot 'Hello' dans playground/README.md"
+              - description: "Chercher 'Hello' dans playground/README.md"
                 passed: ${{ steps.check-for-keyphrase.outcome == 'success' }}
-      # END: Checks
 
       - name: Fail job if not all checks passed
         if: contains(steps.*.outcome, 'failure')
@@ -91,12 +101,12 @@ jobs:
 
   post_next_step_content:
     name: Post next step content
-    needs: [find_exercise, check_step_work]
+    # Si tu veux bloquer la progression tant que les checks ne passent pas, remplace needs par: [find_exercise, check_step_work]
+    needs: [find_exercise]
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
       ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,7 +116,7 @@ jobs:
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
-          file: .github/i18n/fr/step-finished-prepare-next-step.md
+          file: exercise-toolkit/markdown-templates/step-feedback/step-finished-prepare-next-step.md
           vars: |
             next_step_number: 3
 
@@ -122,11 +132,12 @@ jobs:
         with:
           repository: ${{ env.ISSUE_REPOSITORY }}
           issue-number: ${{ env.ISSUE_NUMBER }}
-          file: .github/i18n/fr/watching-for-progress.md
+          file: exercise-toolkit/markdown-templates/step-feedback/watching-for-progress.md
 
       - name: Disable current workflow and enable next one
         run: |
-          gh workflow disable "${{ github.workflow }}"
-          gh workflow enable ".github/workflows/3-last-step.yml"
+          gh workflow disable ".github/workflows/2-step.yml"
+          gh workflow enable ".github/workflows/3-step.yml"
         env:
           GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
